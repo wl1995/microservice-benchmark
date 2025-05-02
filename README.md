@@ -1,4 +1,4 @@
-# Containerizing ROS: Efficient Deployment and Management of Robotic Applications
+# Virtualization & Microservice Architecture for Software-Defined Vehicles: An Evaluation and Exploration
 
 ## 1. Introduction
 
@@ -6,9 +6,9 @@ This repository includes codes for autoware deployment and data process
 
 **NOTE**: To properly use the deployment files for benchmarking, please replace all the paths like **/home/tumi6** to your own path.
 
-**NOTE 2**: We modify the source code of ROS2 please copy the folders in ROS2_source_code and replace them in the ROS2 folder.
+**NOTE 2**: We have modified the source code of ROS2. Please copy the folders in ROS2_source_code and replace them in the ROS2 folder.
 
-**NOTE 3**: The provided container image is a full image that contains all required dependencies for the whole Autoware. However eliminating the unnecessary contents for different module images can further boost the performance and start-up time. For detailed information about the minimum setups for each module, please refer to **eliminating.txt**. These setups are tested by ourself but we can not be sure that they are the minimum setups. Optimizations may still be available.
+**NOTE 3**: The provided container image is a full image that contains all required dependencies for the whole Autoware. However eliminating the unnecessary contents for different module images can further boost the performance and start-up time. For detailed information about the minimum setups for each module, please refer to **eliminating.txt**. These setups are tested by ourself and optimizations may still be available.
 
 ## 2. File Structure
 
