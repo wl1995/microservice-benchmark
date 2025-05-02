@@ -4,14 +4,20 @@
 
 This repository includes codes for autoware deployment and data process
 
+**NOTE**: To properly use the deployment files for benchmarking, please replace all the paths like **/home/tumi6** to your own path.
+
+**NOTE 2**: We modify the source code of ROS2 please copy the folders in ROS2_source_code and replace them in the ROS2 folder.
+
+**NOTE 3**: The provided container image is a full image that contains all required dependencies for the whole Autoware. However eliminating the unnecessary contents for different module images can further boost the performance and start-up time. For detailed information about the minimum setups for each module, please refer to **eliminating.txt**. These setups are tested by ourself but we can not be sure that they are the minimum setups. Optimizations may still be available.
+
 ## 2. File Structure
 
 - **autoware_log**: k3s log files and k3s start up time process scripts *sorter.py, startup_time.py*
 - **bash_folder**: bash files to run test *bare-metal-rosbag, k3s 17 pods, k3s 26 pods*
 - **launch**: launch files
-- **original_k3s_deployments**: k3s deployment files, created before, not included in this thesis
-- **wcm_k3s_deployments**: k3s deployment files
+- **k3s_deployments**: k3s deployment files
 - **test_result_process**: process test results
+- **ROS2_source_code**: source code for tracing launch of nodes
 
 
 ## 3. Installation
@@ -24,7 +30,9 @@ This repository includes codes for autoware deployment and data process
 
 ### ROS2_galactic
 
-   Extract from the compressed archive
+   ROS2 galactic need to be installed from source to ensure the launch of every node is reported. Debian install is also fine if you only want to have a try.
+   
+   **Important**: The **action** folder in **ROS2_source_code** need to be pased to ```/path/to/ros/ros2_galactic/src/ros2/launch_ros/launch_ros/launch_ros``` and the **rclcpp_components** folder need to be pased to ```/path/to/ros/ros2_galactic/src/ros2/rclcpp/rclcpp_components/include``` and then recompile the whole ROS2.
 
    To install dependencies of end-of-life distros 
    
@@ -60,7 +68,7 @@ This repository includes codes for autoware deployment and data process
 
 ## 4. K3s Deployment Workflow
 
-Details in `wcm_k3s_deployments\README.md`
+Details in `k3s_deployments\README.md`
 
 ## 5. Data Processing Workflow
 
