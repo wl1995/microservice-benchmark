@@ -8,7 +8,11 @@ This repository includes codes employed in the paper **Virtualization & Microser
 
 **NOTE 2**: We have modified the source code of ROS2. Please copy the folders in ROS2_source_code and replace them in the ROS2 folder.
 
-**NOTE 3**: The provided container image is a full image that contains all required dependencies for the whole Autoware. However eliminating the unnecessary contents for different module images can further boost the performance and start-up time. For detailed information about the minimum setups for each module, please refer to **eliminating.txt**. These setups are tested by ourself and optimizations may still be available.
+**NOTE 3**: The container images are avaliable by searching **longwen549** in the dockerhub.
+
+**NOTE 4**: The provided container image is a full image that contains all required dependencies for the whole Autoware. However eliminating the unnecessary contents for different module images can further boost the performance and start-up time. For detailed information about the minimum setups for each module, please refer to **eliminating.txt**. These setups are tested by ourself and optimizations may still be available.
+
+
 
 ## 2. File Structure
 
