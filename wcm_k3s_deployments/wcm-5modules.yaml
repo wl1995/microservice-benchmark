@@ -1,0 +1,212 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-map-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-map
+  template:
+    metadata:
+      labels:
+        app: autoware-map
+    spec:
+      containers:
+        - name: autoware-map
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"] 
+          args: ["/autoware/install/autoware_launch/share/autoware_launch/launch/docker_launch/run_map_vehicle.sh>/k3s_log/log_map.txt"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: launch
+              mountPath: /autoware/install/autoware_launch/share/autoware_launch/launch
+            - name: log
+              mountPath: /k3s_log
+      volumes:
+        - name: launch
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/launch
+        - name: log
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/autoware_log/k3s_log
+
+---       
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-sensing-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-sensing
+  template:
+    metadata:
+      labels:
+        app: autoware-sensing
+    spec:
+      containers:
+        - name: autoware-sensing
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"]
+          args: ["/autoware/install/autoware_launch/share/autoware_launch/launch/docker_launch/run_sensing_perception.sh>/k3s_log/log_sensing.txt "]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: launch
+              mountPath: /autoware/install/autoware_launch/share/autoware_launch/launch
+            - name: log
+              mountPath: /k3s_log
+      volumes:
+        - name: launch
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/launch
+        - name: log
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/autoware_log/k3s_log
+
+---    
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-localization-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-localization
+  template:
+    metadata:
+      labels:
+        app: autoware-localization
+    spec:
+      containers:
+        - name: autoware-localization
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"]
+          args: ["/autoware/install/autoware_launch/share/autoware_launch/launch/docker_launch/run_localization_rviz.sh>/k3s_log/log_localization.txt"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: launch
+              mountPath: /autoware/install/autoware_launch/share/autoware_launch/launch
+            - name: log
+              mountPath: /k3s_log
+      volumes:
+        - name: launch
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/launch
+        - name: log
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/autoware_log/k3s_log
+
+---   
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-planning-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-planning
+  template:
+    metadata:
+      labels:
+        app: autoware-planning
+    spec:
+      containers:
+        - name: autoware-planning
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"]
+          args: ["/autoware/install/autoware_launch/share/autoware_launch/launch/docker_launch/run_planning_control.sh>/k3s_log/log_planning.txt"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: launch
+              mountPath: /autoware/install/autoware_launch/share/autoware_launch/launch
+            - name: log
+              mountPath: /k3s_log
+      volumes:
+        - name: launch
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/launch
+        - name: log
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/autoware_log/k3s_log
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-api-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-api
+  template:
+    metadata:
+      labels: 
+        app: autoware-api
+    spec:
+      containers:
+        - name: autoware-api
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"]
+          args: ["/autoware/install/autoware_launch/share/autoware_launch/launch/docker_launch/run_api_system.sh>/k3s_log/log_api.txt"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: launch
+              mountPath: /autoware/install/autoware_launch/share/autoware_launch/launch
+            - name: log
+              mountPath: /k3s_log
+      volumes:
+        - name: launch
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/launch
+        - name: log
+          hostPath:
+            path: /home/tumi6/workspace/autoware-microservice-bench/autoware_log/k3s_log
+          
+
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-rosbag-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-rosbag
+  template:
+    metadata:
+      labels: 
+        app: autoware-rosbag
+    spec:
+      containers:
+        - name: autoware-rosbag
+          image: autoware-rosbag
+          command: ["/run_rosbag.sh"]
+          imagePullPolicy: IfNotPresent
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: port-service
+spec:
+  type: NodePort
+  selector:
+    app: autoware-localization
+  ports:
+  - protocol: TCP
+    nodePort: 31004
+    targetPort: 5900
+    port: 80

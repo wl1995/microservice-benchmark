@@ -1,0 +1,21 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-rosbag-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-rosbag
+  template:
+    metadata:
+      labels:
+        app: autoware-rosbag
+    spec:
+      containers:
+        - name: autoware-rosbag
+          image: autoware-rosbag
+          command: ["/run_rosbag.sh"]
+          imagePullPolicy: IfNotPresent

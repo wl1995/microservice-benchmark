@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-whole-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-whole
+  template:
+    metadata:
+      labels:
+        app: autoware-whole
+    spec:
+      containers:
+        - name: autoware-whole
+          image: autoware-whole-time
+          command: ["/bin/sh","-c"]
+          args: ["/autoware/run_autoware.sh>/log/whole_container_log_k3s.txt"]
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 5900
+          volumeMounts:
+            - name: my-volume
+              mountPath: /log
+      volumes:
+        - name: my-volume
+          hostPath:
+            path: /home/tumi6/autoware_log/whole
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoware-rosbag-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: autoware-rosbag
+  template:
+    metadata:
+      labels:
+        app: autoware-rosbag
+    spec:
+      containers:
+        - name: autoware-rosbag
+          image: autoware-rosbag
+          command: ["/run_rosbag.sh"]
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: port-service2
+spec:
+  type: NodePort
+  selector:
+    app: autoware-whole
+  ports:
+  - protocol: TCP
+    nodePort: 31005
+    targetPort: 5900
+    port: 80
+

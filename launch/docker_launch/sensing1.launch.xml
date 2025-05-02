@@ -1,0 +1,132 @@
+<launch>
+  <!-- From logging_simulator.launch.xml -->
+  <arg name="launch_driver" default="false" description="do launch driver"/>
+  <!-- From autoware.launch.xml -->
+  <arg name="vehicle_model" description="vehicle model name"/>
+  <arg name="vehicle_id" default="$(env VEHICLE_ID default)"/>
+  <arg name="vehicle_param_file" default="$(find-pkg-share $(var vehicle_model)_description)/config/vehicle_info.param.yaml"/>
+  <arg name="vehicle_mirror_param_file" default="$(find-pkg-share $(var vehicle_model)_description)/config/mirror.param.yaml"/>
+
+  
+  
+  <!--From sensing.launch.xml-->
+  
+  <arg name="use_pointcloud_container" default="true" description="launch pointcloud container"/>
+  <arg name="pointcloud_container_name" default="pointcloud_container"/>
+
+  <arg name="launch_sensing1" default="false"/>
+  <arg name="launch_sensing2" default="false"/>
+  <arg name="launch_sensing3" default="false"/>
+  <arg name="launch_sensing4" default="false"/>
+
+  <!-- Global parameters -->
+  <group scoped="false">
+    <include file="$(find-pkg-share global_parameter_loader)/launch/global_params.launch.py">
+      <arg name="use_sim_time" value="false"/>
+      <arg name="vehicle_model" value="$(var vehicle_model)"/>
+    </include>
+  </group>
+
+  <group>
+    <push-ros-namespace namespace="sensing"/>
+
+    <!-- LiDAR Driver -->
+    <group if="$(var launch_sensing1)">
+      <push-ros-namespace namespace="lidar"/>
+      <arg name="use_concat_filter" default="true"/>
+
+      <group>
+        <push-ros-namespace namespace="top"/>
+        <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLS128.launch.xml">
+          <arg name="sensor_frame" value="velodyne_top"/>
+          <arg name="device_ip" value="192.168.1.201"/>
+          <arg name="port" value="2368"/>
+          <arg name="scan_phase" value="300.0"/>
+          <!-- TODO(fred-apex-ai) sensor_timestamp not supported anymore in ros2 driver but default values changed here -->
+          <!-- <arg name="sensor_timestamp" value="false" /> -->
+          <arg name="launch_driver" value="$(var launch_driver)"/>
+          <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
+        </include>
+      </group>
+
+      <group>
+        <push-ros-namespace namespace="left"/>
+        <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
+          <arg name="sensor_frame" value="velodyne_left"/>
+          <arg name="device_ip" value="192.168.1.202"/>
+          <arg name="port" value="2369"/>
+          <arg name="scan_phase" value="180.0"/>
+          <!-- TODO(fred-apex-ai) sensor_timestamp not supported anymore in ros2 driver but default values changed here -->
+          <!-- <arg name="sensor_timestamp" value="false" /> -->
+          <arg name="launch_driver" value="$(var launch_driver)"/>
+          <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
+        </include>
+      </group>
+
+      <group>
+        <push-ros-namespace namespace="right"/>
+        <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
+          <arg name="sensor_frame" value="velodyne_right"/>
+          <arg name="device_ip" value="192.168.1.203"/>
+          <arg name="port" value="2370"/>
+          <arg name="scan_phase" value="180.0"/>
+          <!-- TODO(fred-apex-ai) sensor_timestamp not supported anymore in ros2 driver but default values changed here -->
+          <!-- <arg name="sensor_timestamp" value="false" /> -->
+          <arg name="launch_driver" value="$(var launch_driver)"/>
+          <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
+        </include>
+      </group>
+
+      <group>
+        <push-ros-namespace namespace="rear"/>
+        <include file="$(find-pkg-share common_sensor_launch)/launch/velodyne_VLP16.launch.xml">
+          <arg name="sensor_frame" value="velodyne_rear"/>
+          <arg name="device_ip" value="192.168.1.204"/>
+          <arg name="port" value="2371"/>
+          <arg name="scan_phase" value="180.0"/>
+          <!-- TODO(fred-apex-ai) sensor_timestamp not supported anymore in ros2 driver but default values changed here -->
+          <!-- <arg name="sensor_timestamp" value="false" /> -->
+          <arg name="launch_driver" value="$(var launch_driver)"/>
+          <arg name="vehicle_mirror_param_file" value="$(var vehicle_mirror_param_file)"/>
+        </include>
+      </group>
+
+      <group>
+        <include file="$(find-pkg-share sample_sensor_kit_launch)/launch/pointcloud_preprocessor.launch.py">
+          <arg name="base_frame" value="base_link"/>
+          <arg name="use_intra_process" value="true"/>
+          <arg name="use_multithread" value="true"/>
+          <arg name="use_pointcloud_container" value="$(var use_pointcloud_container)"/>
+          <arg name="container_name" value="$(var pointcloud_container_name)"/>
+        </include>
+      </group>
+    </group>
+
+    <!-- Camera Driver -->
+    <!-- <include file="$(find-pkg-share sample_sensor_kit_launch)/launch/camera.launch.xml">
+      <arg name="launch_driver" value="$(var launch_driver)" />
+    </include> -->
+
+    <!-- IMU Driver -->
+    <group if="$(var launch_sensing2)">
+      <include file="$(find-pkg-share sample_sensor_kit_launch)/launch/imu.launch.xml">
+        <arg name="launch_driver" value="$(var launch_driver)"/>
+      </include>
+    </group>
+
+    <!-- GNSS Driver -->
+    <group if="$(var launch_sensing3)">
+      <include file="$(find-pkg-share sample_sensor_kit_launch)/launch/gnss.launch.xml">
+        <arg name="launch_driver" value="$(var launch_driver)"/>
+      </include>
+    </group>
+
+    <!-- Vehicle Velocity Converter  -->
+    <group if="$(var launch_sensing4)">
+      <include file="$(find-pkg-share vehicle_velocity_converter)/launch/vehicle_velocity_converter.launch.xml">
+        <arg name="input_vehicle_velocity_topic" value="/vehicle/status/velocity_status"/>
+        <arg name="output_twist_with_covariance" value="/sensing/vehicle_velocity_converter/twist_with_covariance"/>
+      </include>
+    </group>
+  </group>
+</launch>
