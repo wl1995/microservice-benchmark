@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-This repository includes codes for autoware deployment and data process
+This repository includes codes employed in the paper **Virtualization & Microservice Architecture for Software-Defined Vehicles: An Evaluation and Exploration**.
 
 **NOTE**: To properly use the deployment files for benchmarking, please replace all the paths like **/home/tumi6** to your own path.
 
